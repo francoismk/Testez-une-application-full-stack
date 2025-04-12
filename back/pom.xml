@@ -31,6 +31,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
 	    <groupId>org.springframework.boot</groupId>
 	    <artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
@@ -103,6 +109,19 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.5</version>
+				<configuration>
+					<excludes>
+						<exclude>
+							**/com/openclassrooms/starterjwt/dto/*
+						</exclude>
+						<exclude>
+							**/com/openclassrooms/starterjwt/payload/*
+						</exclude>
+						<exclude>
+							**/com/openclassrooms/starterjwt/models/*
+						</exclude>
+					</excludes>
+				</configuration>
 				<executions>
 					<execution>
 						<goals>
@@ -138,7 +157,6 @@
 							</rules>
 						</configuration>
 					</execution>
-
 				</executions>
 			</plugin>
 		</plugins>
