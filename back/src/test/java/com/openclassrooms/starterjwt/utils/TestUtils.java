@@ -7,18 +7,24 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 public class TestUtils {
     public static String generateJwtForUser(JwtUtils jwtUtils, String username, String role) {
+        // Créer le UserDetailsImpl
+        UserDetailsImpl userDetails = UserDetailsImpl.builder()
+                .id(1L)
+                .username(username)
+                .password("encodedPassword")
+                .build();
+
+        // Créer l'Authentication avec des autorités explicites
         Authentication authentication = new UsernamePasswordAuthenticationToken(
-                UserDetailsImpl.builder()
-                        .id(1L)
-                        .username(username)
-                        .password("encodedPassword")
-                        .build(),
+                userDetails,
                 null,
-                Arrays.asList(new SimpleGrantedAuthority(role))
+                Collections.singletonList(new SimpleGrantedAuthority(role))
         );
+
         return jwtUtils.generateJwtToken(authentication);
     }
 }
