@@ -11,13 +11,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.test.context.support.WithAnonymousUser;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -81,17 +77,14 @@ public class AuthControllerIntegrationTest {
 
     @Test
     public void whenValidSignup_thenRegisterUser() throws Exception {
-        // Préparez un objet SignupRequest valide
         SignupRequest signupRequest = new SignupRequest();
         signupRequest.setEmail("newuser@test.com");
         signupRequest.setPassword("password123");
         signupRequest.setFirstName("John");
         signupRequest.setLastName("Doe");
 
-        // Convertissez l'objet en JSON
         String requestBody = objectMapper.writeValueAsString(signupRequest);
 
-        // Exécutez la requête avec le corps JSON
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
@@ -131,12 +124,4 @@ public class AuthControllerIntegrationTest {
                 .andExpect(status().isOk());
     }
 
-//    @Test
-//    public void debugRequestToRegister() throws Exception {
-//        mockMvc.perform(post("/api/auth/register"))
-//                .andDo(result -> {
-//                    System.out.println("Status: " + result.getResponse().getStatus());
-//                    System.out.println("Body: " + result.getResponse().getContentAsString());
-//                });
-//    }
 }
