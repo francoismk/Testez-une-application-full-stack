@@ -11,20 +11,20 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-//@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-//@ActiveProfiles("test")
-//@TestPropertySource("classpath:application-test.properties")
+@ActiveProfiles("test")
 public class AuthControllerIntegrationTest {
 
     @Autowired
@@ -32,6 +32,9 @@ public class AuthControllerIntegrationTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
 
     @BeforeEach
@@ -78,21 +81,22 @@ public class AuthControllerIntegrationTest {
 
     @Test
     public void whenValidSignup_thenRegisterUser() throws Exception {
-        String signupRequest = """
-        {
-            "email": "newuser@test.com",
-            "password": "password123",
-            "firstName": "Jane",
-            "lastName": "Doe"
-        }
-        """;
+        // Préparez un objet SignupRequest valide
+        SignupRequest signupRequest = new SignupRequest();
+        signupRequest.setEmail("newuser@test.com");
+        signupRequest.setPassword("password123");
+        signupRequest.setFirstName("John");
+        signupRequest.setLastName("Doe");
 
+        // Convertissez l'objet en JSON
+        String requestBody = objectMapper.writeValueAsString(signupRequest);
+
+        // Exécutez la requête avec le corps JSON
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(signupRequest))
+                        .content(requestBody))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("User registered successfully!"))
-                .andDo(result -> System.out.println(result.getResponse().getContentAsString()));
+                .andExpect(jsonPath("$.message").value("User registered successfully!"));
     }
 
     @Test
@@ -127,12 +131,12 @@ public class AuthControllerIntegrationTest {
                 .andExpect(status().isOk());
     }
 
-    @Test
-    public void debugRequestToRegister() throws Exception {
-        mockMvc.perform(post("/api/auth/register"))
-                .andDo(result -> {
-                    System.out.println("Status: " + result.getResponse().getStatus());
-                    System.out.println("Body: " + result.getResponse().getContentAsString());
-                });
-    }
+//    @Test
+//    public void debugRequestToRegister() throws Exception {
+//        mockMvc.perform(post("/api/auth/register"))
+//                .andDo(result -> {
+//                    System.out.println("Status: " + result.getResponse().getStatus());
+//                    System.out.println("Body: " + result.getResponse().getContentAsString());
+//                });
+//    }
 }
