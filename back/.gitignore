@@ -14,7 +14,7 @@ target/
 .sts4-cache
 
 ### IntelliJ IDEA ###
-.idea
+.idea/
 *.iws
 *.iml
 *.ipr
@@ -32,3 +32,9 @@ build/
 **/.DS_Store
 .DS_Store
 *.DS_Store
+
+# front‑end coverage output
+front/.nyc_output/
+
+# any log files
+*.log

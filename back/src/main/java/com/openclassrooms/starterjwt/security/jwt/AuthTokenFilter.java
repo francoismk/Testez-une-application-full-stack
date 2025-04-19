@@ -47,6 +47,9 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
       }
+      else {
+        SecurityContextHolder.getContext().setAuthentication(null);
+      }
     } catch (Exception e) {
       logger.error("Cannot set user authentication: {}", e);
     }
@@ -60,6 +63,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
       return headerAuth.substring(7, headerAuth.length());
     }
+
+    logger.debug("No JWT token found in Authorization header for URI: " + request.getRequestURI());
 
     return null;
   }
