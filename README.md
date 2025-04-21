@@ -56,7 +56,7 @@ In the front folder:
 npm run test
 ```
 
-to run tests un watch mode:
+To run tests un watch mode:
 ```sh
 npm run test:watch
 ```
@@ -75,7 +75,7 @@ In one terminal:
 npm run start
 ```
 
-in other terminal
+In other terminal
 ```sh
 npm run cypress:open
 ```
